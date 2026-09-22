@@ -24,7 +24,13 @@ function isPublicPath(pathname: string) {
   if (PUBLIC_PATHS.includes(pathname)) return true;
   if (pathname.startsWith("/auth/")) return true;
   if (pathname.startsWith("/_next")) return true;
-  if (pathname.startsWith("/api/device/")) return true; // device ingestion uses its own token auth
+  // API routes handle their own auth check and return a proper JSON 401 —
+  // redirecting them to the HTML /login page here would break every fetch()
+  // call in the app the moment a session expires mid-use (the client would
+  // try to JSON-parse a login page and show a confusing "network error"
+  // instead of the real "please log in again"). The session-refresh logic
+  // above still runs for these requests either way.
+  if (pathname.startsWith("/api/")) return true;
   return false;
 }
 
