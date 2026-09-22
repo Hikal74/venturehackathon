@@ -155,7 +155,7 @@ Fill in:
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | same page |
 | `SUPABASE_SERVICE_ROLE_KEY` | same page — **server-only, never commit this** |
 | `GEMINI_API_KEY` | [aistudio.google.com/apikey](https://aistudio.google.com/apikey) — optional |
-| `GEMINI_MODEL` | defaults to `gemini-2.5-flash` if unset |
+| `GEMINI_MODEL` | defaults to `gemini-3.6-flash` if unset |
 
 ### 4. Set up the database
 

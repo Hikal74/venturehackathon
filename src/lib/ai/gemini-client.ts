@@ -13,6 +13,17 @@ import "server-only";
  *      `{ ok: false, reason }` instead, so a Gemini outage degrades to the
  *      app's honest "Aura AI is temporarily unavailable" state (spec §27)
  *      rather than a 500.
+ *
+ * `thinkingConfig: { thinkingBudget: 0 }` is set on every call: the current
+ * default Gemini model spends a substantial, variable number of tokens on
+ * internal "thinking" before producing visible output — confirmed live
+ * against this project's own API key, a trivial prompt burned 500+ thinking
+ * tokens against a 4096 budget, and a lower budget (matching what this file
+ * used to request) truncated the response mid-JSON. Our prompts are
+ * constrained extraction/summarization over context we already assembled
+ * ourselves, not open-ended reasoning, so thinking buys nothing here and
+ * only adds latency, cost, and a truncation risk. Disabling it made
+ * responses fast and reliably complete in testing.
  */
 import { GoogleGenAI } from "@google/genai";
 import { z } from "zod";
@@ -59,8 +70,15 @@ export async function generateStructured<T>(
         responseJsonSchema: toGeminiJsonSchema(schema),
         temperature: options?.temperature ?? 0.4,
         maxOutputTokens: 2048,
+        thinkingConfig: { thinkingBudget: 0 },
       },
     });
+
+    const finishReason = response.candidates?.[0]?.finishReason;
+    if (finishReason === "MAX_TOKENS") {
+      console.error("Aura AI response was truncated (hit maxOutputTokens).");
+      return { ok: false, reason: "Aura AI's response was too long and got cut off. Please try again." };
+    }
 
     const text = response.text;
     if (!text) return { ok: false, reason: "Aura AI returned an empty response." };
@@ -95,7 +113,12 @@ export async function generateText(prompt: string): Promise<AiResult<string>> {
     const response = await ai.models.generateContent({
       model: env.GEMINI_MODEL,
       contents: prompt,
-      config: { systemInstruction: AURA_AI_SYSTEM_INSTRUCTION, temperature: 0.5, maxOutputTokens: 1024 },
+      config: {
+        systemInstruction: AURA_AI_SYSTEM_INSTRUCTION,
+        temperature: 0.5,
+        maxOutputTokens: 1024,
+        thinkingConfig: { thinkingBudget: 0 },
+      },
     });
     const text = response.text;
     if (!text) return { ok: false, reason: "Aura AI returned an empty response." };
