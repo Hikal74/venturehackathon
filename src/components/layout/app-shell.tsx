@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { SidebarNav } from "./sidebar-nav";
 import { CareProfileSwitcher } from "./care-profile-switcher";
 import { UserMenu } from "./user-menu";
+import { BrandMark } from "@/components/shared/brand-mark";
 import type { CareProfileRow } from "@/services/care-profiles";
 
 export function AppShell({
@@ -30,7 +31,7 @@ export function AppShell({
       {/* Desktop sidebar */}
       <aside className="hidden w-64 shrink-0 flex-col gap-6 border-r border-border bg-background px-4 py-6 md:flex print:hidden">
         <Link href="/dashboard" className="flex items-center gap-2 px-1 text-base font-semibold tracking-tight">
-          <span className="inline-block h-2.5 w-2.5 rounded-full bg-status-recovering" aria-hidden />
+          <BrandMark />
           AuraLink Care
         </Link>
         <CareProfileSwitcher profiles={careProfiles} activeId={activeCareProfileId} />
@@ -52,7 +53,7 @@ export function AppShell({
             </SheetTrigger>
             <SheetContent side="left" className="w-72 px-4 py-6">
               <SheetTitle className="mb-4 flex items-center gap-2 text-base font-semibold tracking-tight">
-                <span className="inline-block h-2.5 w-2.5 rounded-full bg-status-recovering" aria-hidden />
+                <BrandMark />
                 AuraLink Care
               </SheetTitle>
               <div className="flex flex-col gap-6">

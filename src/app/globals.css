@@ -10,6 +10,10 @@
   --font-sans: var(--font-sans);
   --font-mono: var(--font-geist-mono);
   --font-heading: var(--font-sans);
+  --color-brand-cyan: var(--brand-cyan);
+  --color-brand-cobalt: var(--brand-cobalt);
+  --color-brand-teal: var(--brand-teal);
+  --color-brand-violet: var(--brand-violet);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -87,14 +91,28 @@
   --chart-axis: #c3c2b7;
   --chart-muted: #898781;
 
-  --background: oklch(0.985 0 0);
+  /* --------------------------------------------------------------------
+   * Brand system — "HealthTech Minimalist": clinical-white canvas, vivid
+   * digital gradients for brand/interactive elements. Deliberately kept
+   * separate from the status/series tokens above: those are
+   * colorblind-safety validated (see the dataviz skill) and must not
+   * shift with brand restyling, or that validation silently goes stale.
+   * -------------------------------------------------------------------- */
+  --brand-cyan: #0891b2;
+  --brand-cobalt: #1d4ed8;
+  --brand-teal: #0d9488;
+  --brand-violet: #6d28d9;
+  --gradient-brand: linear-gradient(135deg, var(--brand-cyan), var(--brand-cobalt));
+  --gradient-ai: linear-gradient(135deg, var(--brand-teal), var(--brand-violet));
+
+  --background: #f8f9fa; /* "Clinical White" canvas */
   --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
+  --card: #ffffff;
   --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
+  --popover: #ffffff;
   --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
+  --primary: var(--brand-cobalt);
+  --primary-foreground: #ffffff;
   --secondary: oklch(0.97 0 0);
   --secondary-foreground: oklch(0.205 0 0);
   --muted: oklch(0.97 0 0);
@@ -104,7 +122,7 @@
   --destructive: oklch(0.577 0.245 27.325);
   --border: oklch(0.922 0 0);
   --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
+  --ring: var(--brand-cobalt);
   --chart-1: oklch(0.87 0 0);
   --chart-2: oklch(0.556 0 0);
   --chart-3: oklch(0.439 0 0);
@@ -184,5 +202,99 @@
   .clay-inset {
     @apply bg-secondary/60 rounded-2xl;
     box-shadow: inset 3px 3px 8px rgba(0, 0, 0, 0.06), inset -3px -3px 8px rgba(255, 255, 255, 0.7);
+  }
+
+  /* Gradient text — brand headlines and the Aura AI wordmark. Falls back to
+     solid --primary if a browser doesn't support background-clip: text. */
+  .gradient-text-brand,
+  .gradient-text-ai {
+    color: var(--primary);
+    background-repeat: no-repeat;
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .gradient-text-brand {
+    background-image: var(--gradient-brand);
+  }
+  .gradient-text-ai {
+    background-image: var(--gradient-ai);
+  }
+
+  /* Glassmorphic surface for the landing hero's abstract visual — translucent,
+     blurred, layered. Not used for data-heavy app surfaces (those stay flat
+     per the design guidance — see .clay above). */
+  .glass-panel {
+    @apply rounded-3xl border border-white/60 bg-white/50 backdrop-blur-xl;
+    box-shadow:
+      0 8px 32px rgba(29, 78, 216, 0.12),
+      inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  }
+
+  /* Magnetic hover: a small lift + shadow bloom, used on primary CTAs.
+     Deliberately subtle — "precision," not a bouncy gimmick. */
+  .magnetic-hover {
+    transition: transform 200ms cubic-bezier(0.16, 1, 0.3, 1), box-shadow 200ms ease;
+  }
+  .magnetic-hover:hover {
+    transform: translateY(-2px) scale(1.015);
+  }
+
+  /* Scroll-reveal: paired with components/shared/scroll-reveal.tsx, which
+     toggles the [data-revealed] attribute via IntersectionObserver. */
+  [data-reveal] {
+    opacity: 0;
+    transform: translateY(16px);
+    transition: opacity 600ms cubic-bezier(0.16, 1, 0.3, 1), transform 600ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  [data-reveal][data-revealed="true"] {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    [data-reveal] {
+      opacity: 1;
+      transform: none;
+      transition: none;
+    }
+    .magnetic-hover:hover {
+      transform: none;
+    }
+    .float-slow,
+    .pulse-glow {
+      animation: none !important;
+    }
+  }
+
+  /* Hero abstract visual: a gentle float on the front glass card, and a slow
+     pulse on the gradient orb behind it — "kinetic motion" without being
+     distracting. */
+  .float-slow {
+    animation: float-slow 6s ease-in-out infinite;
+  }
+  .pulse-glow {
+    animation: pulse-glow 4s ease-in-out infinite;
+  }
+}
+
+@keyframes float-slow {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes pulse-glow {
+  0%,
+  100% {
+    opacity: 0.5;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.05);
   }
 }
