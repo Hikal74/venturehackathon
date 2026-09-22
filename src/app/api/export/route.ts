@@ -1,6 +1,9 @@
 import { NextResponse } from "next/server";
+import { z } from "zod";
 import { createClient } from "@/lib/supabase/server";
 import { exportCareProfileData } from "@/services/export";
+
+const paramsSchema = z.object({ careProfileId: z.string().uuid() });
 
 export async function GET(request: Request) {
   const supabase = await createClient();
@@ -9,8 +12,9 @@ export async function GET(request: Request) {
   } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Not authenticated." }, { status: 401 });
 
-  const careProfileId = new URL(request.url).searchParams.get("careProfileId");
-  if (!careProfileId) return NextResponse.json({ error: "careProfileId is required." }, { status: 400 });
+  const parsed = paramsSchema.safeParse({ careProfileId: new URL(request.url).searchParams.get("careProfileId") });
+  if (!parsed.success) return NextResponse.json({ error: "A valid careProfileId is required." }, { status: 400 });
+  const { careProfileId } = parsed.data;
 
   try {
     const data = await exportCareProfileData(supabase, careProfileId);
