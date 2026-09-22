@@ -89,9 +89,12 @@ logic lives in `lib/`/`services/` where it's independently testable.
   just a lint warning) to import them from a `"use client"` file. The
   production build (`npm run build`) is proof this boundary holds today —
   it would fail otherwise.
-- The only Supabase client ever constructed in the browser
-  (`lib/supabase/client.ts`) uses just the public URL and anon key, which
-  are safe to expose because they're constrained entirely by RLS.
+- There is no browser-side Supabase client in this app at all — every
+  read/write goes through `lib/supabase/server.ts`. That's why the Supabase
+  URL/anon key are plain `SUPABASE_URL`/`SUPABASE_ANON_KEY` env vars, not
+  `NEXT_PUBLIC_`-prefixed: nothing needs them inlined into client-side JS.
+  See `docs/SECURITY.md` "Why the anon key isn't `NEXT_PUBLIC_`-prefixed
+  here" for the reasoning and what would need to change if that ever does.
 
 ## What's simulated vs. real (read this before a judge asks)
 

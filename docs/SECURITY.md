@@ -20,11 +20,25 @@ anything, because there's nothing to leak by the time it runs the query.
 |---|---|---|
 | `SUPABASE_SERVICE_ROLE_KEY` | Server env only | Never imported by a `"use client"` file — enforced at build time by `import "server-only"` in `lib/supabase/admin.ts` (see `docs/ARCHITECTURE.md`) |
 | `GEMINI_API_KEY` | Server env only | Same `server-only` guard, via `lib/env.ts` and `lib/ai/gemini-client.ts`; Gemini is only ever called from an API route |
-| `NEXT_PUBLIC_SUPABASE_URL` / `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Client + server | Intentionally public — the anon key has no privileges beyond what RLS grants |
+| `SUPABASE_URL` / `SUPABASE_ANON_KEY` | Server env only | Never a `NEXT_PUBLIC_` prefix — see below |
 
 No API key is hardcoded anywhere in source. `.env.local` is git-ignored
 (`.gitignore`); `.env.local.example` documents the required variables
 without real values.
+
+**Why the anon key isn't `NEXT_PUBLIC_`-prefixed here.** The Supabase anon
+key is *designed* to be safe in a browser — it carries no privileges beyond
+what Row Level Security grants, so exposing it isn't a security downgrade.
+But this app has no browser-side Supabase client at all: every read/write
+goes through a Server Component or Server Action (`lib/supabase/server.ts`),
+so nothing ever needs this value inlined into client-side JavaScript. Using
+`NEXT_PUBLIC_` here would only add a real cost — most hosts (Vercel
+included) refuse to let a `NEXT_PUBLIC_`-prefixed variable also be marked
+"Sensitive" (hidden after saving), since those two things contradict each
+other — with no corresponding benefit, since no client code reads it. If a
+future feature (e.g. real-time subscriptions) needs a browser client, add a
+second, `NEXT_PUBLIC_`-prefixed pair specifically for that, rather than
+prefixing the one every server call already relies on.
 
 ## Authentication
 

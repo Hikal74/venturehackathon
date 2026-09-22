@@ -151,8 +151,8 @@ Fill in:
 
 | Variable | Where to get it |
 |---|---|
-| `NEXT_PUBLIC_SUPABASE_URL` | Supabase dashboard → Project Settings → API |
-| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | same page |
+| `SUPABASE_URL` | Supabase dashboard → Project Settings → API |
+| `SUPABASE_ANON_KEY` | same page |
 | `SUPABASE_SERVICE_ROLE_KEY` | same page — **server-only, never commit this** |
 | `GEMINI_API_KEY` | [aistudio.google.com/apikey](https://aistudio.google.com/apikey) — optional |
 | `GEMINI_MODEL` | defaults to `gemini-3.6-flash` if unset |

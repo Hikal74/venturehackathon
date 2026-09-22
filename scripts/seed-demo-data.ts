@@ -13,7 +13,7 @@
  * Usage:
  *   npx tsx scripts/seed-demo-data.ts <careProfileId>
  *
- * Requires SUPABASE_SERVICE_ROLE_KEY and NEXT_PUBLIC_SUPABASE_URL in
+ * Requires SUPABASE_SERVICE_ROLE_KEY and SUPABASE_URL in
  * .env.local (loaded below via dotenv, since this runs outside Next.js).
  */
 import { config } from "dotenv";
@@ -31,10 +31,10 @@ async function main() {
     process.exit(1);
   }
 
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const url = process.env.SUPABASE_URL;
   const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
   if (!url || !serviceRoleKey) {
-    console.error("Missing NEXT_PUBLIC_SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY in .env.local");
+    console.error("Missing SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY in .env.local");
     process.exit(1);
   }
 

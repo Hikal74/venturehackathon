@@ -37,8 +37,8 @@ function isPublicPath(pathname: string) {
 export async function proxy(request: NextRequest) {
   let response = NextResponse.next({ request });
 
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  const supabaseUrl = process.env.SUPABASE_URL;
+  const supabaseAnonKey = process.env.SUPABASE_ANON_KEY;
 
   // If Supabase isn't configured yet (fresh clone, no .env.local), don't
   // hard-crash every request — let pages render their own "not configured"
