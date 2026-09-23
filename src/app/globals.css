@@ -199,6 +199,22 @@
   html {
     @apply font-sans;
   }
+
+  /* Mobile touch targets (design brief §19/§22): the Button component's
+     sizes top out at h-9 (36px), fine for a mouse cursor but under the
+     ~44px minimum comfortable touch target on a phone. Rather than
+     resize every Button variant (which would also affect dense desktop
+     UI like tables and toolbars where compact controls are the point),
+     this only raises the *minimum* hit area, and only below the `md`
+     breakpoint already used everywhere else in this app -- the visual
+     size is unchanged; only the empty space around small text/icon
+     buttons increases below this width. Targets [data-slot="button"]
+     because every Button instance already carries it (see ui/button.tsx). */
+  @media (max-width: 767px) {
+    [data-slot="button"] {
+      min-height: 44px;
+    }
+  }
 }
 
 @layer components {
