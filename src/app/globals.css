@@ -105,6 +105,22 @@
   --gradient-brand: linear-gradient(135deg, var(--brand-cyan), var(--brand-cobalt));
   --gradient-ai: linear-gradient(135deg, var(--brand-teal), var(--brand-violet));
 
+  /* --------------------------------------------------------------------
+   * Motion tokens — one easing curve, one small set of durations, used
+   * everywhere instead of each component inventing its own timing. Values
+   * chosen per the "fast, responsive UI / slightly slower section motion"
+   * split: 150ms for the smallest state changes, up to 420ms for a full
+   * page-level entrance. --ease-standard is a gentle deceleration curve
+   * (fast start, soft landing) rather than linear or a bouncy overshoot —
+   * "precision," not a gimmick, matching .magnetic-hover's own comment.
+   * -------------------------------------------------------------------- */
+  --ease-standard: cubic-bezier(0.16, 1, 0.3, 1);
+  --duration-fast: 150ms; /* micro-interactions: button press, focus ring */
+  --duration-base: 200ms; /* hover states: card lift, magnetic-hover */
+  --duration-moderate: 300ms; /* accordion, dialogs, larger state changes */
+  --duration-slow: 420ms; /* page/section entrances */
+  --duration-ambient: 4s; /* slow looping motion: pulse-glow, float-slow */
+
   --background: #f8f9fa; /* "Clinical White" canvas */
   --foreground: oklch(0.145 0 0);
   --card: #ffffff;
@@ -234,7 +250,7 @@
   /* Magnetic hover: a small lift + shadow bloom, used on primary CTAs.
      Deliberately subtle — "precision," not a bouncy gimmick. */
   .magnetic-hover {
-    transition: transform 200ms cubic-bezier(0.16, 1, 0.3, 1), box-shadow 200ms ease;
+    transition: transform var(--duration-base) var(--ease-standard), box-shadow var(--duration-base) ease;
   }
   .magnetic-hover:hover {
     transform: translateY(-2px) scale(1.015);
@@ -245,7 +261,7 @@
   [data-reveal] {
     opacity: 0;
     transform: translateY(16px);
-    transition: opacity 600ms cubic-bezier(0.16, 1, 0.3, 1), transform 600ms cubic-bezier(0.16, 1, 0.3, 1);
+    transition: opacity var(--duration-slow) var(--ease-standard), transform var(--duration-slow) var(--ease-standard);
   }
   [data-reveal][data-revealed="true"] {
     opacity: 1;
@@ -273,7 +289,7 @@
     animation: float-slow 6s ease-in-out infinite;
   }
   .pulse-glow {
-    animation: pulse-glow 4s ease-in-out infinite;
+    animation: pulse-glow var(--duration-ambient) ease-in-out infinite;
   }
 
   /* Accordion (FAQ, and anywhere else radix-ui's Accordion is used):
@@ -281,30 +297,86 @@
      height, so the open/close animation can smoothly animate to/from an
      actual pixel value instead of faking it with opacity alone. */
   .accordion-content {
-    transition: height 300ms cubic-bezier(0.16, 1, 0.3, 1);
+    transition: height var(--duration-moderate) var(--ease-standard);
   }
   .accordion-content[data-state="open"] {
-    animation: accordion-down 300ms cubic-bezier(0.16, 1, 0.3, 1);
+    animation: accordion-down var(--duration-moderate) var(--ease-standard);
   }
   .accordion-content[data-state="closed"] {
-    animation: accordion-up 300ms cubic-bezier(0.16, 1, 0.3, 1);
+    animation: accordion-up var(--duration-moderate) var(--ease-standard);
   }
 
   /* Page transition: paired with the (app) segment's template.tsx, which
      remounts on every in-app navigation so this animation replays each
      time — a light entrance instead of a hard cut between pages. */
   .page-enter {
-    animation: page-enter 420ms cubic-bezier(0.16, 1, 0.3, 1);
+    animation: page-enter var(--duration-slow) var(--ease-standard);
   }
 
   /* Lift-on-hover for content cards that aren't primary CTAs (those use
      .magnetic-hover). Smaller, quieter movement — a nudge, not a jump. */
   .card-hover {
-    transition: transform 200ms cubic-bezier(0.16, 1, 0.3, 1), box-shadow 200ms ease, border-color 200ms ease;
+    transition: transform var(--duration-base) var(--ease-standard), box-shadow var(--duration-base) ease, border-color var(--duration-base) ease;
   }
   .card-hover:hover {
     transform: translateY(-1px);
     box-shadow: 0 6px 20px rgba(15, 23, 42, 0.06);
+  }
+
+  /* --------------------------------------------------------------------
+   * Typography scale — named levels instead of ad hoc text-4xl/text-2xl
+   * sizing at each call site, so heading hierarchy stays consistent as
+   * more pages adopt it. Sizes intentionally modest for a "premium
+   * medical software" register rather than oversized marketing type.
+   * -------------------------------------------------------------------- */
+  .text-display {
+    @apply text-[2.75rem] leading-[1.05] font-semibold tracking-tight md:text-6xl;
+  }
+  .text-h1 {
+    @apply text-4xl leading-[1.1] font-semibold tracking-tight md:text-5xl;
+  }
+  .text-h2 {
+    @apply text-2xl leading-snug font-semibold tracking-tight md:text-3xl;
+  }
+  .text-h3 {
+    @apply text-lg leading-snug font-semibold tracking-tight md:text-xl;
+  }
+  .text-body {
+    @apply text-base leading-relaxed;
+  }
+  .text-body-sm {
+    @apply text-sm leading-relaxed;
+  }
+  .text-caption {
+    @apply text-muted-foreground text-xs leading-normal;
+  }
+  .text-label {
+    @apply text-muted-foreground text-xs font-semibold tracking-wide uppercase;
+  }
+
+  /* Nav scroll state: paired with components/landing/landing-nav.tsx,
+     which toggles [data-scrolled] via IntersectionObserver on a sentinel
+     at the top of the page. Compacts padding and firms up the elevation
+     once the hero has scrolled past, per the "lightweight and premium,
+     but do not let it consume excessive screen space" brief. */
+  [data-nav] {
+    transition: padding var(--duration-base) var(--ease-standard), box-shadow var(--duration-base) ease,
+      background-color var(--duration-base) ease;
+  }
+  [data-nav][data-scrolled="true"] {
+    box-shadow: 0 1px 0 rgba(0, 0, 0, 0.06), 0 8px 24px rgba(15, 23, 42, 0.06);
+  }
+
+  /* Signal pulse — the product's one recurring visual motif (see
+     components/shared/signal-pulse.tsx): a calm waveform referencing the
+     physiological signals the product actually reads, used sparingly as a
+     section divider and a quiet "live" cue on the brand mark. Not a
+     decorative blob — the same line shape every time it appears. */
+  .signal-pulse-path {
+    animation: signal-travel 3.2s linear infinite;
+  }
+  .signal-pulse-ring {
+    animation: pulse-glow var(--duration-ambient) ease-in-out infinite;
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -317,6 +389,10 @@
     }
     .card-hover:hover {
       transform: none;
+    }
+    .signal-pulse-path,
+    .signal-pulse-ring {
+      animation: none !important;
     }
   }
 }
@@ -369,5 +445,12 @@
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+@keyframes signal-travel {
+  to {
+    /* -285 = -(PATH_LENGTH) in signal-pulse.tsx — one full, seamless loop. */
+    stroke-dashoffset: -285;
   }
 }
