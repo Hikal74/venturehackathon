@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { getSessionContext } from "@/lib/session";
 import { getRecentReadings } from "@/services/readings-history";
 import { DeviceSimulator } from "@/components/devices/device-simulator";
+import { LocationMap } from "@/components/devices/location-map";
 import { formatDateTime } from "@/lib/timezone";
 import { METRICS, METRIC_META } from "@/types/domain";
 
@@ -23,6 +24,8 @@ export default async function DevicesPage() {
       </div>
 
       <DeviceSimulator careProfileId={active.id} />
+
+      <LocationMap />
 
       <div className="flex flex-col gap-3">
         <h2 className="text-sm font-semibold text-muted-foreground">Recently ingested packets</h2>
