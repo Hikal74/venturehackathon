@@ -8,7 +8,8 @@ import { StatusCard } from "@/components/dashboard/status-card";
 import { MetricCard } from "@/components/dashboard/metric-card";
 import { WhatChangedButton } from "@/components/dashboard/what-changed-button";
 import { Button } from "@/components/ui/button";
-import { FadeIn, staggerDelay } from "@/components/shared/fade-in";
+import { FadeIn } from "@/components/shared/fade-in";
+import { staggerDelay } from "@/lib/stagger";
 import { METRICS, STATE_META, type Metric } from "@/types/domain";
 
 export default async function DashboardPage() {

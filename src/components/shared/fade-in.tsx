@@ -39,8 +39,3 @@ export function FadeIn({
     </Tag>
   );
 }
-
-/** Caps per-item stagger so long lists don't take forever to finish revealing. */
-export function staggerDelay(index: number, stepMs = 60, maxSteps = 8): number {
-  return Math.min(index, maxSteps) * stepMs;
-}
