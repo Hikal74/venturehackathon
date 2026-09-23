@@ -1,7 +1,8 @@
 import { AlertCircle, CheckCircle2, MessageSquareText, Sparkles } from "lucide-react";
 import type { TimelineEntry, TimelineEntryKind } from "@/services/timeline";
 import { EvidenceTag } from "@/components/shared/evidence-tag";
-import { FadeIn, staggerDelay } from "@/components/shared/fade-in";
+import { FadeIn } from "@/components/shared/fade-in";
+import { staggerDelay } from "@/lib/stagger";
 import { cn } from "@/lib/utils";
 
 const ICONS: Record<TimelineEntryKind, React.ComponentType<{ className?: string }>> = {

@@ -3,7 +3,8 @@ import { Clock, Link2, TrendingDown } from "lucide-react";
 import { getSessionContext } from "@/lib/session";
 import { discoverPatterns, type PatternKind } from "@/lib/patterns/pattern-engine";
 import { EvidenceTag } from "@/components/shared/evidence-tag";
-import { FadeIn, staggerDelay } from "@/components/shared/fade-in";
+import { FadeIn } from "@/components/shared/fade-in";
+import { staggerDelay } from "@/lib/stagger";
 
 const KIND_META: Record<PatternKind, { label: string; icon: React.ComponentType<{ className?: string }> }> = {
   time_of_day: { label: "Time-of-day pattern", icon: Clock },
