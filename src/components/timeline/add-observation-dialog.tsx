@@ -8,13 +8,9 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { createObservationAction, type ObservationActionState } from "@/app/observations/actions";
+import { nowAsAstanaDatetimeLocal } from "@/lib/timezone";
 
 const initialState: ObservationActionState = {};
-
-function toDatetimeLocalValue(date: Date): string {
-  const pad = (n: number) => n.toString().padStart(2, "0");
-  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
-}
 
 export function AddObservationDialog({ careProfileId }: { careProfileId: string }) {
   const [open, setOpen] = useState(false);
@@ -40,7 +36,7 @@ export function AddObservationDialog({ careProfileId }: { careProfileId: string 
 
           <div className="flex flex-col gap-1.5">
             <Label htmlFor="occurredAt">When</Label>
-            <Input id="occurredAt" name="occurredAt" type="datetime-local" defaultValue={toDatetimeLocalValue(new Date())} />
+            <Input id="occurredAt" name="occurredAt" type="datetime-local" defaultValue={nowAsAstanaDatetimeLocal()} />
           </div>
 
           <div className="grid grid-cols-2 gap-3">

@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { getSessionContext } from "@/lib/session";
 import { getRecentReadings } from "@/services/readings-history";
 import { DeviceSimulator } from "@/components/devices/device-simulator";
+import { formatDateTime } from "@/lib/timezone";
 import { METRICS, METRIC_META } from "@/types/domain";
 
 export default async function DevicesPage() {
@@ -45,7 +46,7 @@ export default async function DevicesPage() {
                 {latestFirst.map((reading) => (
                   <tr key={reading.id} className="border-b border-border last:border-0">
                     <td className="px-3 py-2 tabular-nums text-muted-foreground">
-                      {new Date(reading.recorded_at).toLocaleString([], {
+                      {formatDateTime(reading.recorded_at, {
                         month: "short",
                         day: "numeric",
                         hour: "numeric",

@@ -1,5 +1,6 @@
 import { STATE_META, type CareProfileState } from "@/types/domain";
 import { EvidenceTag } from "@/components/shared/evidence-tag";
+import { formatDateTime } from "@/lib/timezone";
 import type { ReportContent } from "@/services/reports";
 
 export function ReportView({ report, careProfileName }: { report: ReportContent; careProfileName: string }) {
@@ -48,7 +49,7 @@ export function ReportView({ report, careProfileName }: { report: ReportContent;
               <li key={i} className="text-sm">
                 <span className="font-medium">{STATE_META[e.state as CareProfileState]?.label ?? e.state}</span>{" "}
                 <span className="text-muted-foreground">
-                  {new Date(e.startedAt).toLocaleString([], { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" })}
+                  {formatDateTime(e.startedAt, { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" })}
                   {e.durationMinutes != null && ` · ${e.durationMinutes} min`}
                 </span>
               </li>
