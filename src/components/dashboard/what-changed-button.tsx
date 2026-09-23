@@ -1,11 +1,15 @@
 "use client";
 
 import { useState } from "react";
-import { Sparkles, Loader2 } from "lucide-react";
+import { Sparkles, Activity, History, Link2, Lightbulb, Eye, AlertTriangle } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { EvidenceTag } from "@/components/shared/evidence-tag";
+import { ResponseSection } from "@/components/shared/response-section";
+import { SafetyNote } from "@/components/shared/safety-note";
+import { LoadingSequence } from "@/components/shared/loading-sequence";
 import type { WhatChangedResponse } from "@/lib/ai/response-schema";
+import type { EvidenceKind } from "@/types/domain";
 
 type State =
   | { status: "idle" }
@@ -13,12 +17,18 @@ type State =
   | { status: "error"; message: string }
   | { status: "success"; response: WhatChangedResponse };
 
-const SECTIONS: { key: keyof WhatChangedResponse; title: string; evidence: "calculated" | "inferred" | "observed" }[] = [
-  { key: "currentObservation", title: "Current observation", evidence: "calculated" },
-  { key: "relevantContext", title: "Relevant context", evidence: "observed" },
-  { key: "possibleAssociations", title: "Possible associations", evidence: "inferred" },
-  { key: "suggestedResponse", title: "Suggested response", evidence: "inferred" },
-  { key: "whatToWatch", title: "What to watch", evidence: "inferred" },
+const SECTIONS: { key: keyof WhatChangedResponse; title: string; evidence: EvidenceKind; icon: LucideIcon }[] = [
+  { key: "currentObservation", title: "Current observation", evidence: "calculated", icon: Activity },
+  { key: "relevantContext", title: "Relevant context", evidence: "observed", icon: History },
+  { key: "possibleAssociations", title: "Possible associations", evidence: "inferred", icon: Link2 },
+  { key: "suggestedResponse", title: "Suggested response", evidence: "inferred", icon: Lightbulb },
+  { key: "whatToWatch", title: "What to watch", evidence: "inferred", icon: Eye },
+];
+
+const LOADING_MESSAGES = [
+  "Reviewing recent signals and history…",
+  "Comparing against saved context…",
+  "Preparing a plain-language explanation…",
 ];
 
 export function WhatChangedButton({ careProfileId }: { careProfileId: string }) {
@@ -55,42 +65,31 @@ export function WhatChangedButton({ careProfileId }: { careProfileId: string }) 
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className="max-h-[85vh] max-w-lg overflow-y-auto">
           <DialogHeader>
-            <DialogTitle className="flex items-center gap-2">
-              <Sparkles className="h-4 w-4 text-status-recovering" /> What Changed
+            <DialogTitle className="gradient-text-ai flex items-center gap-2">
+              <Sparkles className="h-4 w-4" /> What Changed
             </DialogTitle>
           </DialogHeader>
 
-          {state.status === "loading" && (
-            <div className="flex flex-col items-center gap-3 py-10 text-sm text-muted-foreground">
-              <Loader2 className="h-5 w-5 animate-spin" />
-              Analyzing recent signals and history…
-            </div>
-          )}
+          {state.status === "loading" && <LoadingSequence messages={LOADING_MESSAGES} className="py-6" />}
 
           {state.status === "error" && (
-            <div className="clay-inset flex flex-col gap-1 p-4 text-sm">
-              <span className="font-medium">Aura AI is temporarily unavailable</span>
-              <span className="text-muted-foreground">{state.message}</span>
+            <div className="flex gap-3 rounded-2xl bg-status-warning/10 p-4">
+              <AlertTriangle className="h-4 w-4 shrink-0 text-status-warning" />
+              <div className="flex flex-col gap-0.5 text-sm">
+                <span className="font-medium text-foreground">Aura AI is temporarily unavailable</span>
+                <span className="text-muted-foreground">{state.message}</span>
+              </div>
             </div>
           )}
 
           {state.status === "success" && (
-            <div className="flex flex-col gap-4">
+            <div className="flex flex-col gap-5">
               {SECTIONS.map((section) => (
-                <div key={section.key} className="flex flex-col gap-1.5">
-                  <div className="flex items-center gap-2">
-                    <h3 className="text-sm font-semibold">{section.title}</h3>
-                    <EvidenceTag kind={section.evidence} />
-                  </div>
-                  <p className="text-sm leading-relaxed text-muted-foreground">{state.response[section.key]}</p>
-                </div>
+                <ResponseSection key={section.key} icon={section.icon} title={section.title} evidence={section.evidence}>
+                  {state.response[section.key]}
+                </ResponseSection>
               ))}
-              <div className="border-t border-border pt-3">
-                <p className="text-xs text-muted-foreground">
-                  <span className="font-medium text-foreground">Confidence & limitations: </span>
-                  {state.response.confidenceAndLimitations}
-                </p>
-              </div>
+              <SafetyNote>{state.response.confidenceAndLimitations}</SafetyNote>
             </div>
           )}
         </DialogContent>
