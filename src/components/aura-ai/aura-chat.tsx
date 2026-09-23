@@ -1,11 +1,12 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Send, Sparkles, Loader2, Plus } from "lucide-react";
+import { Send, Sparkles, Plus, AlertTriangle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { EvidenceTag } from "@/components/shared/evidence-tag";
+import { TypingIndicator } from "@/components/shared/typing-indicator";
 import { cn } from "@/lib/utils";
 
 interface ChatMessage {
@@ -16,6 +17,17 @@ interface ChatMessage {
   pending?: boolean;
   error?: boolean;
 }
+
+// Grounded in the same "recent signals, history, or known strategies" scope
+// the empty state and input placeholder already promise — not new
+// capabilities, just a faster way to ask for what Aura AI already answers.
+// Pre-fills the input rather than auto-sending, so the caregiver can edit
+// or personalize it first.
+const SUGGESTED_QUESTIONS = [
+  "What's changed in the last few hours?",
+  "Any patterns worth knowing about this week?",
+  "What strategies are saved for this profile?",
+];
 
 export function AuraChat({
   careProfileId,
@@ -35,8 +47,16 @@ export function AuraChat({
   const router = useRouter();
   const listRef = useRef<HTMLDivElement>(null);
 
-  async function send() {
-    const text = input.trim();
+  // Auto-scroll to the latest message/typing indicator — the previous
+  // version held a ref for this but never actually used it, so a long
+  // conversation just left new replies out of view below the fold.
+  useEffect(() => {
+    const node = listRef.current;
+    if (!node) return;
+    node.scrollTo({ top: node.scrollHeight, behavior: "smooth" });
+  }, [messages, sending]);
+
+  async function send(text = input.trim()) {
     if (!text || sending) return;
 
     const userMsg: ChatMessage = { id: crypto.randomUUID(), role: "user", content: text };
@@ -85,10 +105,12 @@ export function AuraChat({
   return (
     <div className="clay flex h-[70vh] flex-col overflow-hidden">
       <div className="flex items-center justify-between border-b border-border px-5 py-4">
-        <div className="flex items-center gap-2">
-          <Sparkles className="h-4 w-4 text-status-recovering" />
+        <div className="flex items-center gap-2.5">
+          <span className="relative inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full" style={{ background: "var(--gradient-ai)" }}>
+            <Sparkles className="h-3.5 w-3.5 text-white" />
+          </span>
           <div>
-            <h2 className="text-sm font-semibold">Aura AI</h2>
+            <h2 className="gradient-text-ai text-sm font-semibold">Aura AI</h2>
             <p className="text-xs text-muted-foreground">Answering about {careProfileName}&apos;s profile</p>
           </div>
         </div>
@@ -99,10 +121,28 @@ export function AuraChat({
 
       <div ref={listRef} className="flex-1 overflow-y-auto px-5 py-4">
         {messages.length === 0 ? (
-          <div className="flex h-full flex-col items-center justify-center gap-2 text-center text-sm text-muted-foreground">
-            <Sparkles className="h-6 w-6 text-muted-foreground" />
-            <p>Ask Aura AI about {careProfileName}&apos;s recent signals, history, or known strategies.</p>
-            <p className="text-xs">It only knows what&apos;s in this profile&apos;s own record — it won&apos;t guess.</p>
+          <div className="flex h-full flex-col items-center justify-center gap-4 text-center">
+            <span className="relative inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl" style={{ background: "var(--gradient-ai)" }}>
+              <Sparkles className="h-5 w-5 text-white" />
+            </span>
+            <div className="flex flex-col gap-1">
+              <p className="text-body-sm text-foreground">
+                Ask Aura AI about {careProfileName}&apos;s recent signals, history, or known strategies.
+              </p>
+              <p className="text-caption">It only knows what&apos;s in this profile&apos;s own record — it won&apos;t guess.</p>
+            </div>
+            <div className="flex flex-wrap justify-center gap-2">
+              {SUGGESTED_QUESTIONS.map((q) => (
+                <button
+                  key={q}
+                  type="button"
+                  onClick={() => setInput(q)}
+                  className="card-hover rounded-full border border-border bg-card px-3 py-1.5 text-xs text-muted-foreground hover:text-foreground"
+                >
+                  {q}
+                </button>
+              ))}
+            </div>
           </div>
         ) : (
           <div className="flex flex-col gap-4">
@@ -112,12 +152,13 @@ export function AuraChat({
                   className={cn(
                     "max-w-[85%] rounded-2xl px-4 py-2.5 text-sm leading-relaxed",
                     m.role === "user"
-                      ? "bg-foreground text-background"
+                      ? "bg-primary text-primary-foreground"
                       : m.error
-                        ? "bg-status-critical/10 text-status-critical"
+                        ? "flex items-start gap-2 bg-status-warning/10 text-[#8a5a00]"
                         : "bg-secondary text-secondary-foreground"
                   )}
                 >
+                  {m.role === "assistant" && m.error && <AlertTriangle className="mt-0.5 h-3.5 w-3.5 shrink-0" />}
                   {m.content}
                 </div>
                 {m.confidenceNote && (
@@ -129,8 +170,8 @@ export function AuraChat({
               </div>
             ))}
             {sending && (
-              <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                <Loader2 className="h-3.5 w-3.5 animate-spin" /> Thinking…
+              <div className="flex items-center gap-2 rounded-2xl bg-secondary px-4 py-2.5">
+                <TypingIndicator />
               </div>
             )}
           </div>
