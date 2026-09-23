@@ -5,6 +5,7 @@ import { LandingNav } from "@/components/landing/landing-nav";
 import { HeroVisual } from "@/components/landing/hero-visual";
 import { FaqSection } from "@/components/landing/faq-section";
 import { ScrollReveal } from "@/components/shared/scroll-reveal";
+import { SignalPulse } from "@/components/shared/signal-pulse";
 
 export default function LandingPage() {
   return (
@@ -17,7 +18,7 @@ export default function LandingPage() {
           <span className="rounded-full border border-black/10 bg-white px-3 py-1 text-xs font-medium text-muted-foreground">
             Built for VentureHack 2026
           </span>
-          <h1 className="text-4xl font-semibold tracking-tight md:text-5xl">
+          <h1 className="text-h1">
             <span className="gradient-text-brand">Signals in.</span>
             <br />
             Understanding out.
@@ -38,6 +39,8 @@ export default function LandingPage() {
         </div>
         <HeroVisual />
       </section>
+
+      <SignalPulse className="mx-auto h-4 w-full max-w-xs opacity-70" />
 
       {/* Problem / Solution */}
       <ScrollReveal>
@@ -64,7 +67,7 @@ export default function LandingPage() {
       {/* How it works */}
       <ScrollReveal>
         <section className="mx-auto w-full max-w-5xl px-4 py-12 md:px-6">
-          <h2 className="mb-6 text-center text-sm font-semibold uppercase tracking-wide text-muted-foreground">
+          <h2 className="text-label mb-6 text-center">
             How it works
           </h2>
           <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
@@ -120,7 +123,7 @@ export default function LandingPage() {
       {/* Audiences */}
       <ScrollReveal>
         <section className="mx-auto w-full max-w-5xl px-4 py-12 md:px-6">
-          <h2 className="mb-6 text-center text-sm font-semibold uppercase tracking-wide text-muted-foreground">
+          <h2 className="text-label mb-6 text-center">
             Built for the people around the data
           </h2>
           <div className="grid gap-4 md:grid-cols-3">
@@ -161,7 +164,7 @@ export default function LandingPage() {
       {/* Trust anchors — honest equivalents, not FDA/HIPAA claims this product doesn't hold */}
       <ScrollReveal>
         <section className="mx-auto w-full max-w-5xl px-4 py-12 md:px-6">
-          <h2 className="mb-6 text-center text-sm font-semibold uppercase tracking-wide text-muted-foreground">
+          <h2 className="text-label mb-6 text-center">
             Trust, built in — not claimed
           </h2>
           <div className="grid gap-4 md:grid-cols-4">
@@ -197,7 +200,7 @@ export default function LandingPage() {
       {/* Final CTA */}
       <ScrollReveal>
         <section className="mx-auto flex w-full max-w-2xl flex-col items-center gap-4 px-4 py-16 text-center md:px-6">
-          <h2 className="text-2xl font-semibold tracking-tight">
+          <h2 className="text-h2">
             See it with a <span className="gradient-text-brand">demo profile</span> in under a minute.
           </h2>
           <Button size="lg" asChild>
