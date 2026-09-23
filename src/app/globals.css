@@ -323,6 +323,19 @@
     box-shadow: 0 6px 20px rgba(15, 23, 42, 0.06);
   }
 
+  /* Chat typing indicator — three dots, staggered via animationDelay set
+     inline per-dot in TypingIndicator (kept here as one shared keyframe
+     rather than three near-duplicate CSS animations). */
+  .typing-dot {
+    animation: typing-bounce 1.1s ease-in-out infinite;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .typing-dot {
+      animation: none !important;
+      opacity: 0.6;
+    }
+  }
+
   /* --------------------------------------------------------------------
    * Typography scale — named levels instead of ad hoc text-4xl/text-2xl
    * sizing at each call site, so heading hierarchy stays consistent as
@@ -452,5 +465,18 @@
   to {
     /* -285 = -(PATH_LENGTH) in signal-pulse.tsx — one full, seamless loop. */
     stroke-dashoffset: -285;
+  }
+}
+
+@keyframes typing-bounce {
+  0%,
+  60%,
+  100% {
+    transform: translateY(0);
+    opacity: 0.5;
+  }
+  30% {
+    transform: translateY(-3px);
+    opacity: 1;
   }
 }
