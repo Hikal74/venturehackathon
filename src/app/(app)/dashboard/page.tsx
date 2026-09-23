@@ -8,6 +8,7 @@ import { StatusCard } from "@/components/dashboard/status-card";
 import { MetricCard } from "@/components/dashboard/metric-card";
 import { WhatChangedButton } from "@/components/dashboard/what-changed-button";
 import { Button } from "@/components/ui/button";
+import { FadeIn, staggerDelay } from "@/components/shared/fade-in";
 import { METRICS, STATE_META, type Metric } from "@/types/domain";
 
 export default async function DashboardPage() {
@@ -45,7 +46,7 @@ export default async function DashboardPage() {
       </div>
 
       {status.openEvent && (
-        <div className="clay-inset flex items-center gap-3 border border-dashed border-status-serious/40 p-4">
+        <FadeIn className="clay-inset flex items-center gap-3 border border-dashed border-status-serious/40 p-4">
           <AlertTriangle className="h-5 w-5 shrink-0 text-status-serious" />
           <div className="flex-1 text-sm">
             <span className="font-medium">
@@ -57,32 +58,35 @@ export default async function DashboardPage() {
               View on timeline
             </Link>
           </div>
-        </div>
+        </FadeIn>
       )}
 
-      <StatusCard state={status.state} lastUpdated={status.latestReading?.recorded_at ?? null} careProfileName={active.display_name} />
+      <FadeIn delayMs={60}>
+        <StatusCard state={status.state} lastUpdated={status.latestReading?.recorded_at ?? null} careProfileName={active.display_name} />
+      </FadeIn>
 
       {!status.latestReading ? (
-        <div className="clay flex flex-col items-start gap-3 p-6">
+        <FadeIn delayMs={120} className="clay card-hover flex flex-col items-start gap-3 p-6">
           <p className="text-sm text-muted-foreground">
             No sensor readings yet for {active.display_name}. Send a reading from the Device Simulator to see the
             dashboard come alive.
           </p>
-          <Button asChild>
+          <Button asChild className="magnetic-hover">
             <Link href="/devices">Open Device Simulator</Link>
           </Button>
-        </div>
+        </FadeIn>
       ) : (
         <div>
           <h2 className="mb-3 text-sm font-semibold text-muted-foreground">Current signals</h2>
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-5">
-            {METRICS.map((metric) => (
-              <MetricCard
-                key={metric}
-                metric={metric}
-                deviation={status.deviation.perMetric[metric]}
-                history={historyByMetric[metric]}
-              />
+            {METRICS.map((metric, i) => (
+              <FadeIn key={metric} delayMs={120 + staggerDelay(i, 50)}>
+                <MetricCard
+                  metric={metric}
+                  deviation={status.deviation.perMetric[metric]}
+                  history={historyByMetric[metric]}
+                />
+              </FadeIn>
             ))}
           </div>
           {status.deviation.metricsUsed === 0 && (
