@@ -6,7 +6,7 @@ import { sendChatMessage } from "@/services/ai-chat";
 const bodySchema = z.object({
   careProfileId: z.string().uuid(),
   message: z.string().trim().min(1).max(2000),
-  conversationId: z.string().uuid().optional(),
+  conversationId: z.string().uuid().nullish(),
 });
 
 export async function POST(request: Request) {
