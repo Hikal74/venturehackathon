@@ -17,7 +17,7 @@ export function MetricCard({
 
   if (!deviation) {
     return (
-      <div className="flex flex-col gap-2 rounded-2xl border border-border bg-card p-4">
+      <div className="card-hover flex flex-col gap-2 rounded-2xl border border-border bg-card p-4">
         <span className="text-xs font-medium text-muted-foreground">{meta.label}</span>
         <span className="text-sm text-muted-foreground">Not enough baseline history yet</span>
       </div>
@@ -28,7 +28,7 @@ export function MetricCard({
   const Arrow = pct > 2 ? ArrowUp : pct < -2 ? ArrowDown : Minus;
 
   return (
-    <div className="flex flex-col gap-2 rounded-2xl border border-border bg-card p-4">
+    <div className="card-hover flex flex-col gap-2 rounded-2xl border border-border bg-card p-4">
       <div className="flex items-center justify-between">
         <span className="text-xs font-medium text-muted-foreground">{meta.label}</span>
         <EvidenceTag kind="measured" />

@@ -3,6 +3,7 @@ import { Clock, Link2, TrendingDown } from "lucide-react";
 import { getSessionContext } from "@/lib/session";
 import { discoverPatterns, type PatternKind } from "@/lib/patterns/pattern-engine";
 import { EvidenceTag } from "@/components/shared/evidence-tag";
+import { FadeIn, staggerDelay } from "@/components/shared/fade-in";
 
 const KIND_META: Record<PatternKind, { label: string; icon: React.ComponentType<{ className?: string }> }> = {
   time_of_day: { label: "Time-of-day pattern", icon: Clock },
@@ -27,17 +28,17 @@ export default async function PatternsPage() {
       </div>
 
       {patterns.length === 0 ? (
-        <div className="clay p-8 text-center text-sm text-muted-foreground">
+        <FadeIn className="clay p-8 text-center text-sm text-muted-foreground">
           Not enough repeated history yet to surface a pattern. Patterns need the same kind of elevation or context
           to repeat at least a few times — check back as more data comes in, or send some via the Device Simulator.
-        </div>
+        </FadeIn>
       ) : (
         <div className="flex flex-col gap-3">
           {patterns.map((pattern, i) => {
             const meta = KIND_META[pattern.kind];
             const Icon = meta.icon;
             return (
-              <div key={i} className="clay flex gap-4 p-5">
+              <FadeIn key={i} delayMs={staggerDelay(i, 70)} className="clay card-hover flex gap-4 p-5">
                 <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-status-recovering/10 text-status-recovering">
                   <Icon className="h-5 w-5" />
                 </div>
@@ -52,7 +53,7 @@ export default async function PatternsPage() {
                     {pattern.kind === "recovery_speed" ? "episodes" : "days"}.
                   </p>
                 </div>
-              </div>
+              </FadeIn>
             );
           })}
         </div>

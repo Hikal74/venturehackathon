@@ -3,6 +3,7 @@ import { Database, Lock, ShieldCheck, Sparkles, Stethoscope, Users, Wrench } fro
 import { Button } from "@/components/ui/button";
 import { LandingNav } from "@/components/landing/landing-nav";
 import { HeroVisual } from "@/components/landing/hero-visual";
+import { FaqSection } from "@/components/landing/faq-section";
 import { ScrollReveal } from "@/components/shared/scroll-reveal";
 
 export default function LandingPage() {
@@ -41,7 +42,7 @@ export default function LandingPage() {
       {/* Problem / Solution */}
       <ScrollReveal>
         <section className="mx-auto grid w-full max-w-5xl gap-6 px-4 py-12 md:grid-cols-2 md:px-6">
-          <div className="rounded-3xl border border-black/5 bg-white p-6 shadow-sm">
+          <div className="card-hover rounded-3xl border border-black/5 bg-white p-6 shadow-sm">
             <h2 className="text-sm font-semibold text-muted-foreground">The problem</h2>
             <p className="mt-2 text-lg">
               People may have difficulty communicating discomfort or overload before others recognize it —
@@ -49,7 +50,7 @@ export default function LandingPage() {
               why.
             </p>
           </div>
-          <div className="rounded-3xl border border-black/5 bg-white p-6 shadow-sm">
+          <div className="card-hover rounded-3xl border border-black/5 bg-white p-6 shadow-sm">
             <h2 className="gradient-text-brand text-sm font-semibold">The solution</h2>
             <p className="mt-2 text-lg">
               AuraLink combines physiological signals with a personal baseline, recorded history, and
@@ -123,7 +124,7 @@ export default function LandingPage() {
             Built for the people around the data
           </h2>
           <div className="grid gap-4 md:grid-cols-3">
-            <div className="flex flex-col gap-3 rounded-2xl border border-black/5 bg-white p-6">
+            <div className="card-hover flex flex-col gap-3 rounded-2xl border border-black/5 bg-white p-6">
               <div className="flex h-9 w-9 items-center justify-center rounded-full bg-status-recovering/10">
                 <Users className="h-4 w-4 text-status-recovering" />
               </div>
@@ -133,7 +134,7 @@ export default function LandingPage() {
                 explains changes using this person&apos;s own history — never generic advice.
               </p>
             </div>
-            <div className="flex flex-col gap-3 rounded-2xl border border-black/5 bg-white p-6">
+            <div className="card-hover flex flex-col gap-3 rounded-2xl border border-black/5 bg-white p-6">
               <div className="flex h-9 w-9 items-center justify-center rounded-full bg-status-recovering/10">
                 <Stethoscope className="h-4 w-4 text-status-recovering" />
               </div>
@@ -143,7 +144,7 @@ export default function LandingPage() {
                 baseline, timeline, and patterns a caregiver does — nothing fabricated, nothing withheld.
               </p>
             </div>
-            <div className="flex flex-col gap-3 rounded-2xl border border-black/5 bg-white p-6">
+            <div className="card-hover flex flex-col gap-3 rounded-2xl border border-black/5 bg-white p-6">
               <div className="flex h-9 w-9 items-center justify-center rounded-full bg-status-recovering/10">
                 <Wrench className="h-4 w-4 text-status-recovering" />
               </div>
@@ -172,7 +173,7 @@ export default function LandingPage() {
             ].map((item) => (
               <div
                 key={item.label}
-                className="flex flex-col items-center gap-2 rounded-2xl border border-black/5 bg-white p-5 text-center"
+                className="card-hover flex flex-col items-center gap-2 rounded-2xl border border-black/5 bg-white p-5 text-center"
               >
                 <item.icon className="h-5 w-5" style={{ color: "var(--brand-cobalt)" }} />
                 <p className="text-xs font-semibold">{item.label}</p>
@@ -186,6 +187,11 @@ export default function LandingPage() {
             <code className="text-[11px]">docs/SECURITY.md</code> for the full, honest picture.
           </p>
         </section>
+      </ScrollReveal>
+
+      {/* FAQ */}
+      <ScrollReveal>
+        <FaqSection />
       </ScrollReveal>
 
       {/* Final CTA */}
