@@ -1,6 +1,7 @@
 import { AlertTriangle, CheckCircle2, TrendingDown, HelpCircle, ArrowUpCircle, ArrowUpRight } from "lucide-react";
 import { STATE_META, type CareProfileState } from "@/types/domain";
 import { cn } from "@/lib/utils";
+import { formatTime } from "@/lib/timezone";
 
 const ICONS: Record<CareProfileState, React.ComponentType<{ className?: string; style?: React.CSSProperties }>> = {
   calm: CheckCircle2,
@@ -38,7 +39,7 @@ export function StatusCard({
         <span className="text-sm font-medium text-muted-foreground">How is {careProfileName} doing right now?</span>
         {lastUpdated && (
           <span className="text-xs text-muted-foreground">
-            Updated {new Date(lastUpdated).toLocaleTimeString([], { hour: "numeric", minute: "2-digit" })}
+            Updated {formatTime(lastUpdated, { hour: "numeric", minute: "2-digit" })}
           </span>
         )}
       </div>

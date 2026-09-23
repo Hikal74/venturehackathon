@@ -6,20 +6,19 @@ import { getTimelineForDay } from "@/services/timeline";
 import { TimelineList } from "@/components/timeline/timeline-list";
 import { AddObservationDialog } from "@/components/timeline/add-observation-dialog";
 import { Button } from "@/components/ui/button";
+import { astanaDateParam, astanaMidnightFor, formatDate, startOfDayInAstana } from "@/lib/timezone";
 
 function parseDate(value: string | undefined): Date {
   if (value && /^\d{4}-\d{2}-\d{2}$/.test(value)) {
-    const d = new Date(`${value}T00:00:00`);
+    const [year, month, day] = value.split("-").map(Number);
+    const d = astanaMidnightFor(year, month, day);
     if (!Number.isNaN(d.getTime())) return d;
   }
-  const now = new Date();
-  now.setHours(0, 0, 0, 0);
-  return now;
+  return startOfDayInAstana();
 }
 
 function toDateParam(date: Date): string {
-  const pad = (n: number) => n.toString().padStart(2, "0");
-  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
+  return astanaDateParam(date);
 }
 
 export default async function TimelinePage({ searchParams }: { searchParams: Promise<{ date?: string }> }) {
@@ -40,7 +39,7 @@ export default async function TimelinePage({ searchParams }: { searchParams: Pro
         <div>
           <h1 className="text-2xl font-semibold tracking-tight">Timeline</h1>
           <p className="text-sm text-muted-foreground">
-            {day.toLocaleDateString([], { weekday: "long", month: "long", day: "numeric" })}
+            {formatDate(day, { weekday: "long", month: "long", day: "numeric" })}
             {isToday && " · Today"}
           </p>
         </div>
