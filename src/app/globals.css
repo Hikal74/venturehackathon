@@ -105,6 +105,16 @@
   --gradient-brand: linear-gradient(135deg, var(--brand-cyan), var(--brand-cobalt));
   --gradient-ai: linear-gradient(135deg, var(--brand-teal), var(--brand-violet));
 
+  /* The one deliberately dramatic gesture on the landing page (design
+     brief: "bigger, more dramatic version") — a deep mesh-gradient band
+     used only for the hero and the closing CTA, bookending an otherwise
+     calm, light, information-dense middle. Everywhere else on the site
+     stays the restrained "Clinical White" canvas; this is the exception,
+     not the new default, per the brief's own "clean light theme by
+     default" / "don't make the whole website blue" guidance. */
+  --hero-bg-base: #0a0e1a;
+  --hero-bg-deep: #0d1220;
+
   /* --------------------------------------------------------------------
    * Motion tokens — one easing curve, one small set of durations, used
    * everywhere instead of each component inventing its own timing. Values
@@ -261,6 +271,34 @@
     box-shadow:
       0 8px 32px rgba(29, 78, 216, 0.12),
       inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  }
+
+  /* Dark mesh-gradient band — the hero and closing CTA only. Layered
+     radial glows (cobalt, violet, teal) over a near-black base, closer to
+     a premium product-launch page than a flat brand color, but still just
+     three soft blurred shapes — not a busy rainbow. */
+  .hero-band {
+    position: relative;
+    isolation: isolate;
+    background-color: var(--hero-bg-base);
+    background-image:
+      radial-gradient(ellipse 70% 55% at 15% 0%, color-mix(in oklab, var(--brand-cobalt) 55%, transparent), transparent 60%),
+      radial-gradient(ellipse 60% 50% at 100% 15%, color-mix(in oklab, var(--brand-violet) 45%, transparent), transparent 60%),
+      radial-gradient(ellipse 55% 45% at 50% 100%, color-mix(in oklab, var(--brand-teal) 40%, transparent), transparent 65%),
+      linear-gradient(180deg, var(--hero-bg-base), var(--hero-bg-deep));
+  }
+  /* A faint signal-pulse line drawn across the full band, behind the
+     content — the product's own signature motif, not a generic texture. */
+  .hero-band::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    opacity: 0.12;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 240 32' preserveAspectRatio='none'%3E%3Cpath d='M0 16 H80 L92 16 L100 4 L110 28 L118 16 H160 L172 16 L180 8 L188 24 L196 16 H240' fill='none' stroke='white' stroke-width='1.5'/%3E%3C/svg%3E");
+    background-repeat: repeat-x;
+    background-size: 480px 100%;
+    background-position: center;
   }
 
   /* Magnetic hover: a small lift + shadow bloom, used on primary CTAs.

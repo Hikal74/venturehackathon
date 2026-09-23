@@ -12,35 +12,44 @@ export default function LandingPage() {
     <div className="flex flex-1 flex-col bg-background">
       <LandingNav />
 
-      {/* Hero */}
-      <section className="mx-auto grid w-full max-w-6xl grid-cols-1 items-center gap-10 px-4 py-16 md:grid-cols-2 md:gap-8 md:px-6 md:py-24">
-        <div className="flex flex-col items-start gap-6 text-left">
-          <span className="rounded-full border border-black/10 bg-white px-3 py-1 text-xs font-medium text-muted-foreground">
-            Built for VentureHack 2026
-          </span>
-          <h1 className="text-h1">
-            <span className="gradient-text-brand">Signals in.</span>
-            <br />
-            Understanding out.
-          </h1>
-          <p className="max-w-lg text-balance text-muted-foreground">
-            AuraLink Care turns physiological signals, personal history, and caregiver context into
-            AI-assisted, plain-language explanations a caregiver can act on — for people with Autism
-            Spectrum Disorder, built with responsible-AI guardrails from day one.
-          </p>
-          <div className="flex flex-wrap items-center gap-3">
-            <Button size="lg" asChild>
-              <Link href="/signup">Try Demo</Link>
-            </Button>
-            <Button size="lg" variant="outline" className="magnetic-hover" asChild>
-              <Link href="/login">Log in</Link>
-            </Button>
+      {/* Hero — the one deliberately dramatic gesture on this page (see
+          .hero-band in globals.css); everything below returns to the
+          calm, light "Clinical White" canvas. */}
+      <section className="hero-band">
+        <div className="mx-auto grid w-full max-w-6xl grid-cols-1 items-center gap-10 px-4 pt-28 pb-20 md:grid-cols-2 md:gap-8 md:px-6 md:pt-36 md:pb-28">
+          <div className="flex flex-col items-start gap-6 text-left">
+            <span className="rounded-full border border-white/15 bg-white/10 px-3 py-1 text-xs font-medium text-white/70 backdrop-blur-sm">
+              Built for VentureHack 2026
+            </span>
+            <h1 className="text-display text-white">
+              <span className="gradient-text-brand">Signals in.</span>
+              <br />
+              Understanding out.
+            </h1>
+            <p className="max-w-lg text-balance text-white/65">
+              AuraLink Care turns physiological signals, personal history, and caregiver context into
+              AI-assisted, plain-language explanations a caregiver can act on — for people with Autism
+              Spectrum Disorder, built with responsible-AI guardrails from day one.
+            </p>
+            <div className="flex flex-wrap items-center gap-3">
+              <Button size="lg" asChild>
+                <Link href="/signup">Try Demo</Link>
+              </Button>
+              <Button
+                size="lg"
+                variant="outline"
+                className="magnetic-hover border-white/25 bg-white/5 text-white hover:bg-white/10"
+                asChild
+              >
+                <Link href="/login">Log in</Link>
+              </Button>
+            </div>
           </div>
+          <HeroVisual />
         </div>
-        <HeroVisual />
       </section>
 
-      <SignalPulse className="mx-auto h-4 w-full max-w-xs opacity-70" />
+      <SignalPulse className="mx-auto -mt-4 h-4 w-full max-w-xs opacity-70" />
 
       {/* Problem / Solution */}
       <ScrollReveal>
@@ -197,15 +206,18 @@ export default function LandingPage() {
         <FaqSection />
       </ScrollReveal>
 
-      {/* Final CTA */}
+      {/* Final CTA — bookends the hero's dark band, closing the page on
+          the same deliberate gesture it opened on. */}
       <ScrollReveal>
-        <section className="mx-auto flex w-full max-w-2xl flex-col items-center gap-4 px-4 py-16 text-center md:px-6">
-          <h2 className="text-h2">
-            See it with a <span className="gradient-text-brand">demo profile</span> in under a minute.
-          </h2>
-          <Button size="lg" asChild>
-            <Link href="/signup">Try Demo</Link>
-          </Button>
+        <section className="hero-band">
+          <div className="mx-auto flex w-full max-w-2xl flex-col items-center gap-4 px-4 py-20 text-center md:px-6">
+            <h2 className="text-h1 text-white">
+              See it with a <span className="gradient-text-brand">demo profile</span> in under a minute.
+            </h2>
+            <Button size="lg" asChild>
+              <Link href="/signup">Try Demo</Link>
+            </Button>
+          </div>
         </section>
       </ScrollReveal>
 
