@@ -321,6 +321,20 @@
     opacity: 1;
     transform: translateY(0);
   }
+
+  /* Product-preview mini metric bars (landing page): grow from zero
+     height when their ScrollReveal wrapper becomes visible, reusing that
+     same [data-revealed] flip rather than a separate observer/component.
+     A plain descendant selector, so no JS beyond ScrollReveal's own. */
+  .metric-bar-grow {
+    transform: scaleY(0);
+    transform-origin: bottom;
+    transition: transform 700ms var(--ease-standard);
+  }
+  [data-reveal][data-revealed="true"] .metric-bar-grow {
+    transform: scaleY(1);
+  }
+
   @media (prefers-reduced-motion: reduce) {
     [data-reveal] {
       opacity: 1;
@@ -333,6 +347,10 @@
     .float-slow,
     .pulse-glow {
       animation: none !important;
+    }
+    .metric-bar-grow {
+      transform: scaleY(1);
+      transition: none;
     }
   }
 
@@ -446,6 +464,18 @@
     animation: pulse-glow var(--duration-ambient) ease-in-out infinite;
   }
 
+  /* "How it works" diagram connector — same traveling-highlight idea as
+     .signal-pulse-path, but its own keyframe: that one's dashoffset delta
+     (-285) is calibrated to the SignalPulse component's own path length,
+     not this straight 75-unit connector line. Reusing it here would
+     still animate, but the dash pattern wouldn't line up at the loop
+     point (285 isn't a multiple of this line's 15+60 dasharray sum),
+     producing a visible stutter each cycle. -75 matches this line's
+     actual length exactly for a clean loop. */
+  .diagram-connector {
+    animation: diagram-connector-travel 2.4s linear infinite;
+  }
+
   @media (prefers-reduced-motion: reduce) {
     .accordion-content[data-state="open"],
     .accordion-content[data-state="closed"] {
@@ -458,7 +488,8 @@
       transform: none;
     }
     .signal-pulse-path,
-    .signal-pulse-ring {
+    .signal-pulse-ring,
+    .diagram-connector {
       animation: none !important;
     }
   }
@@ -519,6 +550,13 @@
   to {
     /* -285 = -(PATH_LENGTH) in signal-pulse.tsx — one full, seamless loop. */
     stroke-dashoffset: -285;
+  }
+}
+
+@keyframes diagram-connector-travel {
+  to {
+    /* -75 = -(dasharray sum, 15+60) = this connector line's own length — see the comment on .diagram-connector. */
+    stroke-dashoffset: -75;
   }
 }
 
