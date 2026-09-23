@@ -1,0 +1,44 @@
+"use client";
+
+import { useEffect, useState } from "react";
+
+/**
+ * A staged loading indicator for Aura AI calls, replacing a bare spinner +
+ * one static line. The messages describe what's actually happening (fetch
+ * the profile's context, call Gemini, validate the response) in plain
+ * language — reassurance without fabricating processing the system
+ * doesn't do (design brief §15: no fake "scanning medical literature"
+ * claims). Advancing on a timer is cosmetic (we don't have real per-stage
+ * progress from a single fetch), which is why the messages stay honestly
+ * generic rather than implying precise step-by-step tracking.
+ */
+export function LoadingSequence({ messages, className }: { messages: string[]; className?: string }) {
+  const [index, setIndex] = useState(0);
+
+  useEffect(() => {
+    if (messages.length <= 1) return;
+    const timer = setInterval(() => setIndex((i) => Math.min(i + 1, messages.length - 1)), 1400);
+    return () => clearInterval(timer);
+  }, [messages.length]);
+
+  return (
+    <div className={className} role="status" aria-live="polite">
+      <div className="flex items-center gap-3">
+        <span className="relative inline-flex h-2 w-2 shrink-0">
+          <span className="signal-pulse-ring absolute inset-0 rounded-full" style={{ background: "var(--gradient-ai)" }} />
+          <span className="relative h-full w-full rounded-full" style={{ background: "var(--gradient-ai)" }} />
+        </span>
+        <span className="text-body-sm text-foreground">{messages[index]}</span>
+      </div>
+      <div className="mt-3 flex gap-1.5" aria-hidden>
+        {messages.map((m, i) => (
+          <span
+            key={m}
+            className="h-1 flex-1 rounded-full transition-colors duration-300"
+            style={{ backgroundColor: i <= index ? "var(--brand-teal)" : "var(--border)" }}
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
