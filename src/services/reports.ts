@@ -14,6 +14,7 @@ import { computeBaselinesForProfile } from "@/lib/analytics/analysis-engine";
 import { discoverPatterns, type PatternFinding } from "@/lib/patterns/pattern-engine";
 import { listEventsInRange } from "./events";
 import { listObservationsInRange } from "./observations";
+import { astanaDateParam, formatDate, startOfDayInAstana } from "@/lib/timezone";
 import { METRICS, METRIC_META, type Metric } from "@/types/domain";
 
 type Client = SupabaseClient<Database>;
@@ -155,8 +156,7 @@ async function buildReport(
 }
 
 function toDateOnly(date: Date): string {
-  const pad = (n: number) => n.toString().padStart(2, "0");
-  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
+  return astanaDateParam(date);
 }
 
 /**
@@ -169,10 +169,9 @@ function toDateOnly(date: Date): string {
  * day just replaces its snapshot.
  */
 export async function getDailySummary(supabase: Client, careProfileId: string, day: Date): Promise<ReportContent> {
-  const start = new Date(day);
-  start.setHours(0, 0, 0, 0);
+  const start = startOfDayInAstana(day);
   const end = new Date(start.getTime() + 24 * 60 * 60 * 1000 - 1);
-  const content = await buildReport(supabase, careProfileId, start, end, `Daily Summary — ${start.toLocaleDateString()}`);
+  const content = await buildReport(supabase, careProfileId, start, end, `Daily Summary — ${formatDate(start)}`);
 
   const { error } = await supabase
     .from("daily_summaries")
@@ -183,10 +182,9 @@ export async function getDailySummary(supabase: Client, careProfileId: string, d
 }
 
 export async function getWeeklyReport(supabase: Client, careProfileId: string, weekStart: Date): Promise<ReportContent> {
-  const start = new Date(weekStart);
-  start.setHours(0, 0, 0, 0);
+  const start = startOfDayInAstana(weekStart);
   const end = new Date(start.getTime() + 7 * 24 * 60 * 60 * 1000 - 1);
-  const content = await buildReport(supabase, careProfileId, start, end, `Weekly Aura Report — ${start.toLocaleDateString()} to ${new Date(end).toLocaleDateString()}`);
+  const content = await buildReport(supabase, careProfileId, start, end, `Weekly Aura Report — ${formatDate(start)} to ${formatDate(end)}`);
 
   const { error } = await supabase
     .from("weekly_reports")

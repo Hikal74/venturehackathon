@@ -4,6 +4,7 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@/types/database";
 import type { CreateObservationInput } from "@/lib/validation/observation";
 import { getOpenEvent } from "./events";
+import { parseAstanaDatetimeLocal } from "@/lib/timezone";
 
 type Client = SupabaseClient<Database>;
 type ObservationRow = Database["public"]["Tables"]["observations"]["Row"];
@@ -24,7 +25,10 @@ export async function createObservation(
     .insert({
       care_profile_id: input.careProfileId,
       author_id: authorId,
-      occurred_at: input.occurredAt ? new Date(input.occurredAt).toISOString() : new Date().toISOString(),
+      // input.occurredAt comes from a <input type="datetime-local"> with no
+      // timezone in its value — parsed as Astana wall-clock time (see
+      // lib/timezone.ts), not the server's own (UTC) local time.
+      occurred_at: input.occurredAt ? parseAstanaDatetimeLocal(input.occurredAt).toISOString() : new Date().toISOString(),
       environment: input.environment,
       activity: input.activity,
       possible_trigger: input.possibleTrigger,

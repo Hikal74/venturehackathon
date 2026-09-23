@@ -10,6 +10,7 @@ import { WhatChangedButton } from "@/components/dashboard/what-changed-button";
 import { Button } from "@/components/ui/button";
 import { FadeIn } from "@/components/shared/fade-in";
 import { staggerDelay } from "@/lib/stagger";
+import { formatTime } from "@/lib/timezone";
 import { METRICS, STATE_META, type Metric } from "@/types/domain";
 
 export default async function DashboardPage() {
@@ -29,7 +30,7 @@ export default async function DashboardPage() {
     activity_level: [],
   };
   for (const reading of recentReadings) {
-    const label = new Date(reading.recorded_at).toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
+    const label = formatTime(reading.recorded_at, { hour: "numeric", minute: "2-digit" });
     for (const metric of METRICS) {
       const value = reading[metric];
       if (value != null) historyByMetric[metric].push({ value, label });
@@ -53,7 +54,7 @@ export default async function DashboardPage() {
             <span className="font-medium">
               {STATE_META[status.openEvent.state as keyof typeof STATE_META]?.label ?? status.openEvent.state}
             </span>{" "}
-            since {new Date(status.openEvent.started_at).toLocaleTimeString([], { hour: "numeric", minute: "2-digit" })}.
+            since {formatTime(status.openEvent.started_at, { hour: "numeric", minute: "2-digit" })}.
             {" "}
             <Link href="/timeline" className="underline underline-offset-2">
               View on timeline

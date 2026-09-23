@@ -3,6 +3,7 @@ import type { TimelineEntry, TimelineEntryKind } from "@/services/timeline";
 import { EvidenceTag } from "@/components/shared/evidence-tag";
 import { FadeIn } from "@/components/shared/fade-in";
 import { staggerDelay } from "@/lib/stagger";
+import { formatTime } from "@/lib/timezone";
 import { cn } from "@/lib/utils";
 
 const ICONS: Record<TimelineEntryKind, React.ComponentType<{ className?: string }>> = {
@@ -51,7 +52,7 @@ export function TimelineList({ entries }: { entries: TimelineEntry[] }) {
             <div className="flex-1 pb-6">
               <div className="flex flex-wrap items-center gap-2">
                 <span className="text-xs font-medium tabular-nums text-muted-foreground">
-                  {new Date(entry.time).toLocaleTimeString([], { hour: "numeric", minute: "2-digit" })}
+                  {formatTime(entry.time, { hour: "numeric", minute: "2-digit" })}
                 </span>
                 <EvidenceTag kind={EVIDENCE[entry.kind]} />
               </div>
